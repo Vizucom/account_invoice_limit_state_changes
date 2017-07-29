@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from openerp.osv import fields, osv
+from openerp.tools.translate import _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -26,7 +27,7 @@ class AccountInvoice(osv.osv):
         try:
             last_allowed_edit_day = int(last_allowed_edit_day)
         except ValueError:
-            raise osv.except_osv('Error', 'Could not check dates, system parameter "account_invoice_limit_state_changes.last_edit_day_in_month" should be an integer.')
+            raise osv.except_osv(_('Error'), _('Could not check dates, system parameter "account_invoice_limit_state_changes.last_edit_day_in_month" should be an integer.'))
 
         if 'state' in vals and vals['state'] in ['cancel', 'open'] and int(last_allowed_edit_day) > 0:
             for invoice in self.browse(cr, uid, ids, context):                
@@ -43,6 +44,6 @@ class AccountInvoice(osv.osv):
 
                 invoice_date = datetime.strptime(invoice.date_invoice, '%Y-%m-%d').date()
                 if invoice_date < first_allowed_edit_date:
-                    raise osv.except_osv('Error', 'Invoices with invoice date earlier than {} cannot be validated or cancelled anymore.'.format(first_allowed_edit_date.strftime('%d.%m.%Y')))
+                    raise osv.except_osv(_('Error'), _('Invoices with invoice date earlier than {} cannot be validated or cancelled anymore.').format(first_allowed_edit_date.strftime('%d.%m.%Y')))
 
         return res
